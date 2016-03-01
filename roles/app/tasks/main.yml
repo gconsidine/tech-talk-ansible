@@ -1,0 +1,30 @@
+---
+  
+- name: Fetch Node.js (4.x) from NodeSource
+  get_url: url=https://deb.nodesource.com/setup_4.x dest=~/ mode=774
+
+- name: Set Node.js repository
+  shell: . ~/setup_4.x
+
+- name: Install app server dependencies
+  apt: name={{ item }} state=latest
+  with_items:
+    - nginx
+    - build-essential
+    - nodejs
+
+- name: Install global Node.js depdencies
+  npm: name={{ item }} global=yes state=latest
+  with_items:
+    - npm
+    - pm2
+    - node-gyp
+
+- name: Copy the default nginx configuration file
+  copy: src=../files/default dest=/etc/nginx/sites-available/default
+
+- name: Create a symbolic link to nginx configuration
+  file: src=/etc/nginx/sites-available/default dest=/etc/nginx/sites-enabled/default state=link
+
+- name: Restart nginx
+  service: name=nginx state=restarted

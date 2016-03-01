@@ -1,0 +1,28 @@
+---
+
+- name: Install git on application servers for deployments
+  apt: name=git state=present
+
+- name: Clone latest version of blueoak-server
+  git: repo=https://github.com/BlueOakJS/blueoak-server-template.git dest=/opt/blueoak
+
+- name: Install dependencies
+  shell: (cd /opt/blueoak ; npm install)
+
+- name: Template index.js for server start
+  template: src=../templates/index.js.j2 dest=/opt/blueoak/index.js
+
+- name: Template example handler
+  template: src=../templates/hello-handler.js.j2 dest=/opt/blueoak/handlers/hello.js
+
+- name: If PM2 was never started to begin with, start it
+  shell: (cd /opt/blueoak ; pm2 start index.js --name blueoak)
+  register: pm2_status
+  ignore_errors: yes
+
+#- debug: var=pm2_status
+
+- name: Restart if PM2 was already running
+  shell: (cd /opt/blueoak ; pm2 restart blueoak)
+  when: pm2_status['stderr'] is defined
+

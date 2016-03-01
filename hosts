@@ -1,0 +1,11 @@
+[all]
+host-one
+host-two
+
+[staging]
+host-one
+
+[prod]
+host-two
+
+

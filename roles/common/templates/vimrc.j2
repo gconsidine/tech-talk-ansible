@@ -1,0 +1,52 @@
+execute pathogen#infect()
+
+"Vundle stuff
+set nocompatible
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+Plugin 'posva/vim-vue'
+
+call vundle#end()
+filetype plugin indent on
+
+"Color, font, syntax settings
+syntax enable
+set t_Co=256
+set background=dark
+colorscheme {{ vim_color }}
+highlight nonText ctermbg=none
+highlight Normal ctermbg=none
+
+set guifont=monospace\ 9
+set cc=101
+
+"Tab settings
+set expandtab
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
+set smarttab
+set autoindent
+retab
+
+set number
+
+inoremap jj <Esc>
+inoremap <C-v> <ESC>"+pa
+
+vmap <C-v> c<ESC>"+p
+vnoremap <C-c> "+y
+
+nmap <C-v> c<ESC>"+p
+
+map <left> <c-w><
+map <right> <c-w>>
+map <up> <c-w>-
+map <down> <c-w>+
+
+map <C-n> :NERDTreeToggle<CR>
+
+let g:NERDTreeWinSize = 30
+let g:airline#extensions#tabline#fnamemod = ':t'

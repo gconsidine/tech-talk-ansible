@@ -1,0 +1,30 @@
+---
+
+- name: Install common server dependencies
+  apt: name={{ item }} state=latest
+  with_items:
+    - rsync
+    - vim
+    - tmux
+
+- name: Update cache
+  apt: update_cache=yes
+
+- name: Create groups to be used
+  group: name={{ item }} state=present
+  with_items:
+    - www-data
+    - deploy 
+
+- name: Create user and assign to groups
+  user: name=ttalk shell=/bin/bash groups=sudo,www-data,deploy home=/home/ttalk
+
+- name: rsync vim directory
+  synchronize: src=/home/greg/.vim dest=/root/
+
+- name: rsync tmux directory
+  synchronize: src=/home/greg/.tmux dest=/root/
+
+- name: Template .vimrc and style by server type
+  template: src=../templates/vimrc.j2 dest=/root/.vimrc
+
